@@ -32,16 +32,25 @@ print(default_deck())
 
 #%%
 
+class Player():
+
+    def select_card
+
+#%%
+
+
+
 @dataclass
 class GameState():
     step: int
     rows: list[Cards]
 
+
     def __repr__(self) -> str:
         return f"{self.step}: {self.rows}"
 
 
-
+#%%
 
 
 class Game():
