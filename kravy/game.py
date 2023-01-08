@@ -1,6 +1,7 @@
 
 from dataclasses import dataclass, field
 from abc import ABC, abstractmethod
+from typing import Optional
 import copy
 import random
 import logging
@@ -52,7 +53,7 @@ class Player(ABC):
         pass
 
     @abstractmethod
-    def select_row(self, rows: list[list[Card]]) -> int:
+    def select_row(self, rows: list[list[Card]], other: list[Card]) -> int:
         pass
 
 
@@ -66,7 +67,7 @@ class PlayerState(object):
     player: Player
     hand: list[Card] = field(default_factory=list)
     score: int = 0
-    card: Card|None = None
+    card: Optional[Card] = None
 
     def __repr__(self):
         return f"{self.player.name} ({self.score}): {self.hand}"
@@ -79,7 +80,7 @@ class Game():
 
     def __init__(self,
                  players: list[Player],
-                 deck: list[Card]|None = None,
+                 deck: Optional[list[Card]] = None,
                  num_rounds: int = 10,
                  num_rows: int = 4
                  ):
@@ -111,7 +112,7 @@ class Game():
                 min_card = row[-1]
         return copy.deepcopy(min_card)
 
-    def find_closest_row_idx(self, card: Card) -> int|None:
+    def find_closest_row_idx(self, card: Card) -> Optional[int]:
         min_d = float("inf")
         min_i = None
         for i, row in enumerate(self.rows):
@@ -140,7 +141,11 @@ class Game():
 
             if ps.card < lowest:
                 self.log.info(f"{ps.card} is lower that all rows")
-                row_idx = ps.player.select_row(copy.deepcopy(self.rows))
+                cards = [p.card for p in self.players]
+                row_idx = ps.player.select_row(
+                    copy.deepcopy(self.rows),
+                    copy.deepcopy(cards)
+                )
                 points = self.row_points(row_idx)
                 ps.score += points
                 self.log.info(f"{ps.player.name} chosed to take {row_idx} row with {points} points")
