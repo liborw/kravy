@@ -11,11 +11,10 @@ class RandomPlayer(Player):
         super().__init__(name)
         self.take_min = take_min
 
-    def select_card(self, hand: list[Card], rows: list[list[Card]]) -> Card:
-        i = random.randint(0, len(hand)-1)
-        return hand[i]
+    def select_card(self, hand: list[Card], rows: list[list[Card]]) -> int:
+        return random.randint(0, len(hand)-1)
 
-    def select_row(self, rows: list[list[Card]]) -> int:
+    def select_row(self, rows: list[list[Card]], other: list[Card]) -> int:
         if self.take_min:
             min_p = float("inf")
             min_i = 0

@@ -49,7 +49,7 @@ class Player(ABC):
         self.log = logging.getLogger(name)
 
     @abstractmethod
-    def select_card(self, hand: list[Card], rows: list[list[Card]]) -> Card:
+    def select_card(self, hand: list[Card], rows: list[list[Card]]) -> int:
         pass
 
     @abstractmethod
@@ -129,10 +129,11 @@ class Game():
         self.log.info(f"state: {self.rows}")
 
         for ps in self.players:
-            ps.card = ps.player.select_card(
-                    copy.deepcopy(ps.hand),
-                    copy.deepcopy(self.rows)
+            i = ps.player.select_card(
+                copy.deepcopy(ps.hand),
+                copy.deepcopy(self.rows)
             )
+            ps.card = ps.hand[i]
 
         lowest = self.lowest()
         for ps in sorted(self.players, key=lambda ps: ps.card):
