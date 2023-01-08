@@ -14,7 +14,7 @@ class RandomPlayer(Player):
     def select_card(self, hand: list[Card], rows: list[list[Card]]) -> int:
         return random.randint(0, len(hand)-1)
 
-    def select_row(self, rows: list[list[Card]], other: list[Card]) -> int:
+    def select_row(self, rows: list[list[Card]]) -> int:
         if self.take_min:
             min_p = float("inf")
             min_i = 0

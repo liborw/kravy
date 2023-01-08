@@ -53,8 +53,12 @@ class Player(ABC):
         pass
 
     @abstractmethod
-    def select_row(self, rows: list[list[Card]], other: list[Card]) -> int:
+    def select_row(self, rows: list[list[Card]]) -> int:
         pass
+
+    def reveal(self, cards: dict[str, Card]):
+        pass
+
 
 
 @dataclass
@@ -135,17 +139,18 @@ class Game():
             )
             ps.card = ps.hand[i]
 
+        cards = { p.player.name: p.card for p in self.players}
+        for ps in self.players:
+            ps.player.reveal(copy.deepcopy(cards))
+
         lowest = self.lowest()
         for ps in sorted(self.players, key=lambda ps: ps.card):
             ps.hand.remove(ps.card)
             self.log.info(f"{ps.player.name} chosed {ps.card}")
-
             if ps.card < lowest:
                 self.log.info(f"{ps.card} is lower that all rows")
-                cards = [p.card for p in self.players]
                 row_idx = ps.player.select_row(
-                    copy.deepcopy(self.rows),
-                    copy.deepcopy(cards)
+                    copy.deepcopy(self.rows)
                 )
                 points = self.row_points(row_idx)
                 ps.score += points
@@ -163,5 +168,14 @@ class Game():
 
             self.log.info(f"{ps.card} will go on {row_idx} and is safe")
             self.rows[row_idx].append(ps.card)
+
+    def print_score(self):
+
+
+
+
+        for ps in self.players:
+            print(f"{ps.player.name}: {ps.score}")
+
 
 
